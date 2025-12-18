@@ -1,0 +1,48 @@
+services:
+  postgres:
+    container_name: postgres_mcp
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpassword
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+    volumes:
+      # O script init.sql roda automaticamente ao iniciar
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mcp_network
+
+  mock_api:
+    build: ./mock_api
+    container_name: mock_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=database
+      - DB_USER=user
+      - DB_PASSWORD=userpassword
+    depends_on:
+      - postgres
+    networks:
+      - mcp_network
+    
+  mcp-server:
+    build: ./mcp_server
+    container_name: mcp_server
+    ports:
+      - "8080:8080"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MOCK_API_URL=http://mock_api:8000
+    depends_on:
+      - mock_api
+    networks:
+      - mcp_network
+
+networks:
+  mcp_network:
+    driver: bridge
