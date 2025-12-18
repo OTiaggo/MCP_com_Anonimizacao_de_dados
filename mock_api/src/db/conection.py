@@ -3,11 +3,12 @@ from psycopg2.extras import RealDictCursor
 import os
 
 
-DB_HOST = "postgres"
-DB_NAME = "database"
-DB_USER = "user"
-DB_PASS = "userpassword"
-DB_PORT = "5432"
+# Tenta pegar do ambiente (Docker), se não achar, usa localhost (PC)
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_NAME = os.getenv("DB_NAME", "database")
+DB_USER = os.getenv("DB_USER", "user")
+DB_PASS = os.getenv("DB_PASSWORD", "userpassword") 
+DB_PORT = os.getenv("DB_PORT", "5432")
 
 def get_db_connection():
     try:
