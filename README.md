@@ -16,16 +16,6 @@ Sistema que permite a uma IA consultar um banco via API para auditar descontos e
 - Backend (Docker): Postgres, Mock API, MCP Server
 - Cliente: Chat CLI (Local)
 
-```mermaid
-graph TD
-  User[User] --> Chat[Chat Client]
-  Chat --> MCP[MCP Server]
-  MCP --> API[Mock API]
-  API --> DB[(Postgres)]
-```
-
-**Se o GitHub não renderizar o diagrama, use o diagrama ASCII abaixo:**
-
 User -> Chat Client (Local)
 Chat Client -> MCP Server (SSE)
 MCP Server -> Mock API (HTTP)
