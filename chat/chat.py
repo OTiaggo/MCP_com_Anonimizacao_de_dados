@@ -1,16 +1,17 @@
 import os
 import asyncio
 import json
+import traceback
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from mcp import ClientSession
-from mcp.client.sse import sse_client  # Importação correta para SSE
+from mcp.client.sse import sse_client
 
-load_dotenv()
+# Carrega .env forçando override para garantir que pegue a chave nova
+load_dotenv(override=True)
 
 # Configurações
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# Ajuste IMPORTANTE: A porta deve bater com a do Docker (8080) e ter o caminho /sse
 MCP_URL = os.getenv("MCP_URL", "http://localhost:8080/sse") 
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -19,11 +20,9 @@ async def run_chat():
     print(f"📡 Conectando ao servidor MCP em: {MCP_URL}...")
 
     try:
-        # O sse_client gerencia a conexão HTTP e cria os streams (read/write)
         async with sse_client(MCP_URL) as streams:
             read_stream, write_stream = streams
             
-            # O ClientSession recebe os streams obrigatórios
             async with ClientSession(read_stream, write_stream) as session:
                 await session.initialize()
                 
@@ -51,11 +50,18 @@ async def run_chat():
                         
                         messages.append({"role": "user", "content": user_input})
                         
-                        # Chama GPT
+                        # Chama GPT (CORREÇÃO AQUI: Formatando tools para OpenAI)
                         response = await client.chat.completions.create(
                             model="gpt-4o-mini",
                             messages=messages,
-                            tools=[tool.model_dump() for tool in tools],
+                            tools=[{
+                                "type": "function",
+                                "function": {
+                                    "name": tool.name,
+                                    "description": tool.description,
+                                    "parameters": tool.inputSchema
+                                }
+                            } for tool in tools],
                             tool_choice="auto"
                         )
                         
@@ -97,8 +103,9 @@ async def run_chat():
                         break
                         
     except Exception as e:
-        print(f"\n❌ Erro de Conexão: {str(e)}")
-        print("DICA: Verifique se o container mcp-server está rodando e se a porta 8080 está correta.")
+        print(f"\n❌ Erro Fatal:")
+        traceback.print_exc()
+        print(f"Mensagem: {str(e)}")
 
 if __name__ == "__main__":
     asyncio.run(run_chat())
