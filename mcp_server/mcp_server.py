@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     # Em vez de usar mcp.run(), pegamos a aplicação SSE interna e rodamos com Uvicorn
     # Isso evita erros de argumentos e garante que o Docker consiga expor a porta
-    print(f"🚀 Iniciando servidor FastMCP (SSE) na porta {8001}...")
+    print(f"🚀 Iniciando servidor FastMCP (SSE) na porta {8080}...")
     
     # mcp.sse_app() retorna uma aplicação Starlette configurada com a rota /sse
-    uvicorn.run(mcp.sse_app(), host="0.0.0.0", port=8001)
+    uvicorn.run(mcp.sse_app(), host="0.0.0.0", port=8080)
