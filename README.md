@@ -40,7 +40,8 @@ pip install -r requirements.txt
 Crie `chat/.env` com:
 ```env
 OPENAI_API_KEY=sk-...
-MCP_URL=http://localhost:8080/sse
+API_BASE_URL=http://localhost:8000
+MCP_PORT=8080
 ```
 Execute:
 ```bash
