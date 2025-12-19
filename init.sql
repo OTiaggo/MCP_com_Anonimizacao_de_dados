@@ -57,7 +57,7 @@ CREATE TABLE descontos_calculados (
 );
 
 INSERT INTO descontos_calculados (fornecedor, varejista, data_calculo, valor_calculado) VALUES
-    ('Coca Cola', 'Grupo Pão de Açúcar', '2025-10-01', 500.00),
+    ('Coca Cola', 'Grupo Pão de Açúcar', '2025-10-01', 600.00),
     ('Nestlé Brasil', 'Carrefour', '2025-10-02', 1500.00), -- Divergência
     ('M Dias Branco', 'Açaí Atacadista', '2025-10-03', 300.00);
 
