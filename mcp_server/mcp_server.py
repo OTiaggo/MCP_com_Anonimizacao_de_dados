@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 from mcp.server import Server
 from mcp.server.models import Resource, Tool
 from mcp.types import (
-    TextContent, ImageContent, EmbeddingContent, ListToolsResult, ListResourcesResult
+    TextContent, ListToolsResult, ListResourcesResult
 )
 from pydantic import BaseModel, Field
 import os
@@ -13,15 +13,13 @@ load_dotenv()
 
 # Configurações da API
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+MCP_PORT = int(os.getenv("MCP_PORT", "8001"))
 
 server = Server("desconto-api-server")
 
 class DescontoRequest(BaseModel):
     fornecedor: str = Field(..., description="Nome do fornecedor")
     varejista: str = Field(..., description="Nome do varejista")
-
-class VariaveisResponse(BaseModel):
-    variaveis: List[Dict[str, Any]]
 
 # ==========================================
 # TOOLS - Recursos principais da API
@@ -146,5 +144,6 @@ Tabela completa de variáveis/mapeamentos
     ])
 
 if __name__ == "__main__":
-    print(f"🚀 Servidor MCP rodando em: {API_BASE_URL}")
-    server.run()
+    print(f"🚀 Servidor MCP rodando na porta {MCP_PORT}")
+    print(f"📡 Conectando com API FastAPI em: {API_BASE_URL}")
+    server.run(host="0.0.0.0", port=MCP_PORT)
