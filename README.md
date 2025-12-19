@@ -18,11 +18,18 @@ Sistema que permite a uma IA consultar um banco via API para auditar descontos e
 
 ```mermaid
 graph TD
-    User((Usuário)) -->|Terminal| Chat[Chat Client (Local)]
-    Chat -->|SSE| MCP[MCP Server (Docker:8080)]
-    MCP -->|HTTP| API[Mock API (Docker:8000)]
-    API -->|SQL| DB[(PostgreSQL)]
+  User[User] --> Chat[Chat Client]
+  Chat --> MCP[MCP Server]
+  MCP --> API[Mock API]
+  API --> DB[(Postgres)]
 ```
+
+**Se o GitHub não renderizar o diagrama, use o diagrama ASCII abaixo:**
+
+User -> Chat Client (Local)
+Chat Client -> MCP Server (SSE)
+MCP Server -> Mock API (HTTP)
+Mock API -> Postgres (SQL)
 
 ---
 
